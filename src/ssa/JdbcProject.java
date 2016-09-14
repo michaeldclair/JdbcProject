@@ -15,7 +15,11 @@ public class JdbcProject {
 		static ResultSet rs=null;
 		static int prereq;
 		static String reqstring;
-		ArrayList<int> columnName = new ArrayList<int>();
+		static ArrayList<String> columnName = new ArrayList<String>();
+		static ArrayList<String> columnType = new ArrayList<String>();
+		static ArrayList<String> columnAuto = new ArrayList<String>();
+		static ArrayList<String> columnPrecision = new ArrayList<String>();
+		static ArrayList<String> columnScale = new ArrayList<String>();
 		
 		public static void main(String[] args) throws SQLException {
 			
@@ -28,16 +32,16 @@ public class JdbcProject {
 				String thePassword = props.getProperty("password");
 				String theDbUrl = props.getProperty("dburl");
 				
+				fetchData(theDbUrl, theUser, thePassword);
+				insertData(theDbUrl, theUser, thePassword);
 	//			fetchData(theDbUrl, theUser, thePassword);
-	//			insertData(theDbUrl, theUser, thePassword);
-	//			fetchData(theDbUrl, theUser, thePassword);
-	//			fetchGeorge(theDbUrl, theUser, thePassword);
-	//			update(theDbUrl, theUser, thePassword);
-	//			fetchGeorge(theDbUrl, theUser, thePassword);
-	//			deleteRecord(theDbUrl, theUser, thePassword);
-	//			fetchData(theDbUrl, theUser, thePassword);
-	//			backup2(theDbUrl, theUser, thePassword);
-				backup3(theDbUrl, theUser, thePassword);
+				fetchGeorge(theDbUrl, theUser, thePassword);
+				update(theDbUrl, theUser, thePassword);
+				fetchGeorge(theDbUrl, theUser, thePassword);
+				deleteRecord(theDbUrl, theUser, thePassword);
+				fetchData(theDbUrl, theUser, thePassword);
+				backup2(theDbUrl, theUser, thePassword);
+	//			backup3(theDbUrl, theUser, thePassword);
 
 			
 			}
@@ -77,7 +81,7 @@ public class JdbcProject {
 			try {
 				myConn = DriverManager.getConnection(url, user, pass);
 				stmt = myConn.createStatement();
-				stmt.executeUpdate("update student set gpa = 3.5, sat = 1450, major_id = 1 where id = 13");
+				stmt.executeUpdate("update student set gpa = 3.0, sat = 1450, major_id = 1 where id = 13");
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}finally {
@@ -91,7 +95,7 @@ public class JdbcProject {
 			try {
 				myConn = DriverManager.getConnection(url, user, pass);
 				stmt = myConn.createStatement();
-				stmt.executeUpdate("insert student values (13, 'George', 'Washington',4.0,1400,NULL)");
+				stmt.executeUpdate("insert student values (13, 'George', 'Washington',4.0,1600,NULL)");
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}finally {
@@ -222,14 +226,60 @@ public class JdbcProject {
 				stmt = myConn.createStatement();
 				rs = stmt.executeQuery("select * from student;");
 				ResultSetMetaData rsmd = rs.getMetaData();
+
 				int numberOfColumns = rsmd.getColumnCount();
-				for (int i = 0, i < numberOfColumns, i++) {
-					
+				
+				
+				for (int i = 0; i < numberOfColumns; i++) {
+					columnName.add(rsmd.getColumnName(i+1));
 				}
-				String columnName = rsmd.getColumnName(1);
+				for (int i = 0; i < numberOfColumns; i++) {
+					columnType.add(rsmd.getColumnTypeName(i+1));
+				}
+				for (int i = 0; i < numberOfColumns; i++) {
+					columnAuto.add(String.valueOf(rsmd.isAutoIncrement(i+1)));
+				}	
+				for (int i = 0; i < numberOfColumns; i++) {
+					columnPrecision.add(String.valueOf(rsmd.getPrecision(i+1)));
+				}
+				
+				for (int i = 0; i < numberOfColumns; i++) {
+					columnScale.add(String.valueOf(rsmd.getScale(i+1)));
+				}
+				
+//				for (int i = 0; i < numberOfColumns; i++) {
+//					columnKeys.add(String.valueOf(rsmd.getImportedKeys(i+1)));
+//				}
+				
+				
+				
+				
+				
 				System.out.println(numberOfColumns);
-				System.out.println(columnName);
+				for (String column : columnName) {
+					System.out.println(column);
+				}
 			
+				System.out.println(numberOfColumns);
+				for (String type : columnType) {
+					System.out.println(type);
+				}
+				
+				System.out.println(numberOfColumns);
+				for (String type : columnAuto) {
+					System.out.println(type);
+				}
+				
+				System.out.println(numberOfColumns);
+				for (String type : columnPrecision) {
+					System.out.println(type);
+				}
+				
+				System.out.println(numberOfColumns);
+				for (String type : columnScale) {
+					System.out.println(type);
+				}
+				
 			}catch(Exception exc){
 					exc.printStackTrace();
 			}finally {
